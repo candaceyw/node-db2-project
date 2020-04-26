@@ -2,58 +2,56 @@ const express = require('express');
 const db = require('./data/config');
 const router = express.Router();
 
-// Create a /sales subroute
-const saleRoutes = require('./salesRouter');
-router.use('/:id/sales', saleRoutes);
-
 // GET all
 router.get('/', async (req, res, next) => {
 	try {
-		const cars = await db.select('*').from('cars');
-		res.json(cars);
+		const sales = await db.select('*').from('sales');
+		res.json(sales);
 	} catch (error) {
 		next(error);
 	}
 });
 
-// POST new car information
+// POST new sales information
 router.post('/', async (req, res, next) => {
 	try {
 		const payload = req.body;
-		const [id] = await db('cars').insert(payload);
-		const car = await db('cars').where('id', id).first();
-		res.json(car);
+		const [sale_id] = await db('sales').insert(payload);
+		const sale = await db('sales').where('sale_id', sale_id).first();
+		res.json(sale);
 	} catch (error) {
 		next(error);
 	}
 });
 
-// GET cars by ID
+// GET sale by ID
 router.get('/:id', async (req, res, next) => {
 	try {
-		const car = await db('cars').where('id', req.params.id);
-		res.json(car);
+		const sale = await db('sales').where('sale_id', req.params.id).first();
+		res.json(sale);
 	} catch (error) {
 		next(error);
 	}
 });
 
-// PUT update car
+// PUT update sale
 router.put('/:id', async (req, res, next) => {
 	try {
 		const payload = req.body;
-		await db('cars').where('id', req.params.id).update(payload);
-		const updateCar = await db('cars').where('id', req.params.id).first();
-		res.json(updateCar);
+		await db('sales').where('sale_id', req.params.id).update(payload);
+		const updateSale = await db('sales')
+			.where('sale_id', req.params.id)
+			.first();
+		res.json(updateSale);
 	} catch (error) {
 		next(error);
 	}
 });
 
-// DELETE car
+// DELETE sale
 router.delete('/:id', async (req, res, next) => {
 	try {
-		await db('cars').where('id', req.params.id).del();
+		await db('sales').where('sale_id', req.params.id).del();
 		res.status(204).end();
 	} catch (error) {
 		next(error);
